@@ -12,10 +12,10 @@ dotenv.config();
 
 const app = express();
 
-// ✅ Setup allowed origins
+
 const allowedOrigins = [process.env.CLIENT_URL];
 
-// ✅ Middlewares
+//  Middlewares
 app.use(cors({
   origin: allowedOrigins,
   credentials: true,
@@ -23,31 +23,32 @@ app.use(cors({
 app.use(express.json());
 app.use(cookieParser());
 
-// ✅ Routes
+//  Routes
 app.use("/api/auth", authRouter);
 app.use("/api/user", userRouter);
 
-// ✅ Home route
+//  Home route
 app.get("/", (req, res) => {
-  res.json({ message: "Subscribe to SLRTech — Server working ✅" });
+  res.json({ message: "Server working" });
 });
 
 const port = process.env.PORT || 3000;
 const server = createServer(app);
 
-// ✅ Connect to DB first, then initialize Socket.io
+// Connect to DB first, then initialize Socket.io
 (async () => {
   try {
     await connectDB();
-    console.log("✅ Successfully connected to the database");
+    console.log(" Successfully connected to the database");
 
+    // This creates a real-time server for signaling.
     const io = new Server(server, {
-      pingTimeout: 60000,
+      pingTimeout: 60000, 
       cors: {
         origin: allowedOrigins[0],
         methods: ["GET", "POST"],
       },
-    });
+    });  
 
     let onlineUser = [];
 
